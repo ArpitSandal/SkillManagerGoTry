@@ -1,0 +1,12 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "../postgresql/schema.sql"
+    queries: "../postgresql/queries.sql" # ? path of the file, in this case will create in the same level as sqlc file
+    gen:
+      go:
+        package: "repo"
+        out: "../postgresql/sqlc"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_interface: true # generate a querier interface
