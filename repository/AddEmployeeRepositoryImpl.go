@@ -19,8 +19,9 @@ func (repo SkillRepository) AddEmployeeRepository(ctx context.Context, addedEmpl
 		return models.Employee{}, err
 	}
 
-	defer tx.Rollback(context.Background())
+	defer tx.Rollback(ctx)
 
+	// build new query object through which we can execute query methods in interface of sqlc
 	queries := sqlcRepo.New(tx)
 
 	id, err := queries.AddEmployee(ctx, sqlcRepo.AddEmployeeParams{
@@ -39,7 +40,7 @@ func (repo SkillRepository) AddEmployeeRepository(ctx context.Context, addedEmpl
 	for _, skill := range addedEmployee.Skills {
 		addedSkill, err := queries.AddEmployeeSkill(ctx, sqlcRepo.AddEmployeeSkillParams{
 			SkillName:  skill.SkillName,
-			Category:   pgtype.Text{String: skill.Category, Valid: true},
+			Category:   pgtype.Text{String: skill.Category, Valid: true},  // tells the postgres it's a non null value
 			EmployeeID: pgtype.Int4{Int32: id, Valid: true},
 		})
 		if err != nil {
